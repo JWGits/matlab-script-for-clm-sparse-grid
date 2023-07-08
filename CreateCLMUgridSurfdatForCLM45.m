@@ -45,7 +45,7 @@ lonlat_found = 0;
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
-    %disp(['Inp: Dimension name:' dimname])
+    disp(['Inp: Dimension name:' dimname])
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -59,17 +59,17 @@ for idim = 1:ndims
                 lonlat_found = 1;
                 dimname = 'gridcell';
                 dimlen = length(long_region);
-                %disp(['Out: Dimension name:' dimname])
+                disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             end
         case 'time'
-            %disp(['Out: Dimension name:' dimname])
+            disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
         otherwise
-            %disp(['Out: Dimension name:' dimname])
+            disp(['Out: Dimension name:' dimname])
             for ii=1:length(info_inp.Dimensions)
                 if (strcmp(info_inp.Dimensions(ii).Name,dimname) == 1)
                     [dimname, dimlen] = netcdf.inqDim(ncid_inp,ii-1);
@@ -86,7 +86,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dimids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    %disp(['varname : ' varname ' ' num2str(dimids)])
+    disp(['varname : ' varname ' ' num2str(dimids)])
     if(isempty(dimids)==0)
         if (lonlat_found)
             if(dimids(1) == 0 && dimids(2) == 1)

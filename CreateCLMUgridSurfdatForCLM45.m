@@ -64,7 +64,7 @@ for idim = 1:ndims
             end
         case 'time'
             disp(['Out: Dimension name:' dimname])
-            %dimid(idim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
+            dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen); %netcdf.getConstant('NC_UNLIMITED'));
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);

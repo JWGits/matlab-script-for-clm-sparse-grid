@@ -97,9 +97,9 @@ if (time_found == 1)
     out_dim_id = [out_dim_id; last_dim]
     out_dim_name = [out_dim_name; {dimname}]
 end
-in_dim_id_str = string(in_dim_id)
-out_dim_id_str = string(out_dim_id)
-in_dict = dictionary(in_dim_id_str, in_dim_name);
+in_dim_id = num2cell(in_dim_id)
+out_dim_id = num2cell(out_dim_id)
+in_dict = dictionary(in_dim_id, in_dim_name);
 out_dict = dictionary(out_dim_name, out_dim_id);
 disp(['input_dict: ' in_dict])
 disp(['output_dict: ' out_dict])

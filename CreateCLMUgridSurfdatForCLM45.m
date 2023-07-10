@@ -81,7 +81,7 @@ for idim = 1:ndims
 end
 
 if (time_found == 1)
-    in_time_id = find(in_dim_id == find(in_dim_name=='time'))
+    in_time_id = find(in_dim_id == find(strcmp(in_dim_name,'time'))); 
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
     disp(['time_dim: ' dimname 'tim_len: ' dimlen])
     last_dim = ndims + 1

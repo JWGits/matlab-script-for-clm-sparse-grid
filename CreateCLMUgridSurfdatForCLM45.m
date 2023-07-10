@@ -121,7 +121,7 @@ for ivar = 1:nvars
         end
     end
     out_dims = [];
-    for dim_itr = 1:size(dimids)
+    for dim_itr = 1:size(dimids,1)
         out_dims = [out_dims, out_dict(in_dict(dimids(dim_itr)))];
     end
     disp(['out_dims: ' out_dims])

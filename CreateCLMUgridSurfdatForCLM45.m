@@ -97,10 +97,10 @@ if (time_found == 1)
     out_dim_id = [out_dim_id; last_dim]
     out_dim_name = [out_dim_name; {dimname}]
 end
-in_dim_name_str = [string(in_dim_name)]
-out_dim_name_str = [string(out_dim_name)]
-in_dim_id = num2str(in_dim_id)
-out_dim_id = num2str(out_dim_id)
+in_dim_name_str = string(in_dim_name)
+out_dim_name_str = string(out_dim_name)
+in_dim_id = string(in_dim_id)
+out_dim_id = string(out_dim_id)
 in_dict = dictionary(in_dim_id, in_dim_name);
 out_dict = dictionary(out_dim_name, out_dim_id);
 

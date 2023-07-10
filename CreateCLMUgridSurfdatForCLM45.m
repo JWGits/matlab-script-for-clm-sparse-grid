@@ -113,9 +113,9 @@ for ivar = 1:nvars
         if (lonlat_found)
             dimnames = [];
             for dim_itr = 1:numel(dimids)
-                dimnames = [dimnames, in_dict(dimids(dim_itr)+1)]
+                dimnames = [dimnames; {in_dict(dimids(dim_itr)+1)}]
             end
-            if ((dimnames(1)=='lsmlon') || (dimnames(1)=='lsmlat'))  && ((dimnames(2)=='lsmlat') || (dimnames(2)=='lsmlon'))
+            if ((dimnames(1,1)=='lsmlon') || (dimnames(1,1)=='lsmlat'))  && ((dimnames(2,1)=='lsmlat') || (dimnames(2,1)=='lsmlon'))
                 dimids_new =  [0 dimids(3:end)-1];
                 dimids = dimids_new;
             else

@@ -40,20 +40,28 @@ info_inp = ncinfo(clm_gridded_surfdata_filename)
 %                           Define dimensions
 %
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-dimid(1:ndims) = -1;
+dimid(1:ndims) = -1
 lonlat_found = 0;
+time_found = 0;
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
-    
+
+    if (time_found == 0)
+        if (strcmp(dimname, 'time'))
+            time_found = 1;
+            continue
+    elseif (time_found == 1)
+        idim = idim - 1
+        
     switch dimname
         case {'lsmlon','lsmlat'}
-            if (strcmp(dimname,'lsmlat'))
-                lat_dimid = idim;
-            else
-                lon_dimid = idim;
-            end
+            %if (strcmp(dimname,'lsmlat'))
+            %    lat_dimid = idim;
+            %else
+            %    lon_dimid = idim;
+            %end
             
             if (lonlat_found == 0)
                 lonlat_found = 1;
@@ -63,8 +71,7 @@ for idim = 1:ndims
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             end
         case 'time'
-            disp(['Out: Dimension name:' dimname])
-            dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen); %netcdf.getConstant('NC_UNLIMITED'));
+            disp(['Out: Dimension name:' dimname '(skipped)'])
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
@@ -78,7 +85,7 @@ for idim = 1:ndims
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
     end
 end
-
+dimid(ndim-1) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables
@@ -86,8 +93,8 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dimids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    dimids = flip(dimids);
-    natts = flip(natts);
+    %dimids = flip(dimids);
+    %natts = flip(natts);
     disp(['varname : ' varname ' ' num2str(dimids)])
     if(isempty(dimids)==0)
         if (lonlat_found)

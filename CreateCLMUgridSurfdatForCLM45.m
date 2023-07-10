@@ -119,7 +119,10 @@ for ivar = 1:nvars
             rm_lonlat = {'lsmlon';'lsmlat'}
             dimupdate = setdiff(vdim_names, rm_lonlat)
             if(isempty(dimupdate) == 0)
-                diminputs = {{'gridcell'}; dimupdate{:}}
+                diminputs = {'gridcell'};
+                for i = 1:numel(dimupdate)
+                    diminputs = [diminputs; dimupdate{i}]
+                end
             else
                 diminputs = {'gridcell'}
             end

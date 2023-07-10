@@ -109,8 +109,8 @@ for ivar = 1:nvars
         vdim_names = {};
         for dim_itr = 1:size(dim_ids)
             vdim_names = [vdim_names; {in_dict(dim_ids(dim_itr)+1)}];
-            fprintf('\ndimnames: \n');
-            fprintf('%s,\n', vdim_names{:});
+            fprintf('\ndimnames: ');
+            fprintf('%s  ', vdim_names{:});
         end
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'};

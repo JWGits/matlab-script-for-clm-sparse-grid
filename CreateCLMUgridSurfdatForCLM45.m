@@ -115,8 +115,10 @@ for ivar = 1:nvars
             rm_lonlat = {'lsmlon';'lsmlat'}
             diminputs = ['gridcell'; setdiff(vdim_names, rm_lonlat)]
         else
-            diminput = vdim_names 
+            diminputs = vdim_names 
         end
+    else
+        diminputs = [];
     end
     out_dims = [];
     if (isempty(diminputs)==0)

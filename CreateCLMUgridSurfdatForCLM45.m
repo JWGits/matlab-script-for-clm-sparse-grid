@@ -127,7 +127,7 @@ for ivar = 1:nvars
     end
     out_dims = [];
     if (isempty(diminputs)==0)
-        for dim_itr = 1:size(diminputs)
+        for dim_itr = 1:numel(diminputs)
             out_dims = [out_dims; out_dict(char(diminputs(dim_itr)))];
         end
     end

@@ -97,8 +97,8 @@ if (time_found == 1)
     out_dim_id = [out_dim_id, last_dim]
     out_dim_name = [out_dim_name, {dimname}]
 end
-in_dim_name_str = char(in_dim_name)
-out_dim_name_str = char(out_dim_name)
+in_dim_name_str = squeeze(in_dim_name)
+out_dim_name_str = squeeze(out_dim_name)
 %in_dim_name_str = [convertCharsToStrings(in_dim_name)]
 %out_dim_name_str = [convertCharsToStrings(out_dim_name)]
 in_dict = dictionary(in_dim_id, in_dim_name);

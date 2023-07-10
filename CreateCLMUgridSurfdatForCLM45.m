@@ -111,12 +111,11 @@ for ivar = 1:nvars
     disp(['varname : ' varname ' ' num2str(dimids)]) 
     if(isempty(dimids)==0)
         if (lonlat_found)
-            dimnames = [];
+            dimnames = {};
             for dim_itr = 1:numel(dimids)
                 dimnames = [dimnames; {in_dict(dimids(dim_itr)+1)}]
             end
-            disp(['dimnames: ' dimnames])
-            
+			disp(dimnames{1})
             if (strcmp(dimnames{1},'lsmlon') || strcmp(dimnames{1},'lsmlat'))  && (strcmp(dimnames{2},'lsmlon') || strcmp(dimnames{2},'lsmlat'))                dimids_new =  [0 dimids(3:end)-1];
                 out_dims = [];
                 dim_init = dimids(3:end)-1

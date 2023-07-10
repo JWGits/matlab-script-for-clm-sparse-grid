@@ -109,10 +109,13 @@ for ivar = 1:nvars
         vdim_names = {};
         for dim_itr = 1:size(dim_ids)
             vdim_names = [vdim_names; {in_dict(dim_ids(dim_itr)+1)}];
+            fprintf('\ndims: \n');
+            fprintf('%s,\n',vdim_names);
         end
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'};
-            diminputs = ['gridcell'; setdiff(vdim_names, rm_lonlat)]
+            dimupdate = setdiff(vdim_names, rm_lonlat)
+            diminputs = {['gridcell'; dimupdate{:}]}
         else
             diminputs = vdim_names 
         end

@@ -44,15 +44,15 @@ dimid(1:ndims) = -1;
 lonlat_found = 0;
 time_found = 0;
 in_dim_id = [];
-in_dim_name = [];
+in_dim_name = {};
 out_dim_id = [];
-out_dim_name = [];
+out_dim_name = {};
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
     in_dim_id = [in_dim_id, idim];
-    in_dim_name = [in_dim_name, dimname];
+    in_dim_name = [in_dim_name, {dimname}];
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -63,20 +63,20 @@ for idim = 1:ndims
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
                 out_dim_id = [out_dim_id, idim];
-                out_dim_name = [out_dim_name, dimname];
+                out_dim_name = [out_dim_name, {dimname}];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             out_dim_id = [out_dim_id, idim];
-            out_dim_name = [out_dim_name, dimname];
+            out_dim_name = [out_dim_name, {dimname}];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             out_dim_id = [out_dim_id, idim];
-            out_dim_name = [out_dim_name, dimname];
+            out_dim_name = [out_dim_name, {dimname}];
     end
 end
 
@@ -95,10 +95,12 @@ if (time_found == 1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
     out_dim_id = [out_dim_id, last_dim]
-    out_dim_name = [out_dim_name, dimname]
+    out_dim_name = [out_dim_name, {dimname}]
 end
-in_dict = dictionary(in_dim_id, cell2mat(in_dim_name));
-out_dict = dictionary(cell2mat(out_dim_name), out_dim_id);
+in_dim_name = reshape([in_dim_name{:}], size(in_dim_name))
+out_dim_name = reshape([out_dim_name{:}], size(out_dim_name))
+in_dict = dictionary(in_dim_id, in_dim_name);
+out_dict = dictionary(out_dim_name, out_dim_id);
 
 disp(['input_dict: ' in_dict])
 disp(['output_dict: ' out_dict])

@@ -51,8 +51,8 @@ out_dim_name = {};
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
-    in_dim_id = [in_dim_id; idim];
-    in_dim_name = [in_dim_name; {dimname}];
+    in_dim_id = [in_dim_id; idim]
+    in_dim_name = [in_dim_name; {dimname}]
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -92,8 +92,8 @@ if (time_found == 1)
     out_dim_id = [out_dim_id; last_dim];
     out_dim_name = [out_dim_name; {dimname}];
 end
-in_dim_id = num2cell(in_dim_id);
-out_dim_id = num2cell(out_dim_id);
+in_dim_id = num2cell(in_dim_id)
+out_dim_id = num2cell(out_dim_id)
 in_dict = containers.Map(in_dim_id, in_dim_name)
 out_dict = containers.Map(out_dim_name, out_dim_id)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -107,11 +107,11 @@ for ivar = 1:nvars
     fprintf(' %d  ', dim_ids);
     if(isempty(dim_ids)==0)
         vdim_names = {};
-        for dim_itr = 1:size(dim_ids)
+        for dim_itr = 1:size(dim_ids,1)
             vdim_id = dim_ids(dim_itr) + 1
             vdim_names = [vdim_names; in_dict(vdim_id)];
             fprintf('\ndimnames: ');
-            fprintf('%d  ', vdim_names{:});
+            fprintf('%s  ', vdim_names{:});
         end
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'};

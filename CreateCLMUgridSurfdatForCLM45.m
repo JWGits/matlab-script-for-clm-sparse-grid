@@ -116,15 +116,17 @@ for ivar = 1:nvars
                 dimnames = [dimnames; {in_dict(dimids(dim_itr)+1)}]
             end
             if (strcmp(dimnames{1},'lsmlon') || strcmp(dimnames{1},'lsmlat'))  && (strcmp(dimnames{2},'lsmlon') || strcmp(dimnames{2},'lsmlat'))                dimids_new =  [0 dimids(3:end)-1];
+                dimids_new =  [0 dimids(3:end)-1];
                 dimids = dimids_new;
             else
                 dimids = dimids - 1;
             end
         end
     end
+    disp(['dimids: ' num2str(dimids)])
     out_dims = [];
     for dim_itr = 1:numel(dimids)
-        out_dims = [out_dims, out_dict(in_dict(dimids(dim_itr)+1))];
+        out_dims = [out_dims; out_dict(in_dict(dimids(dim_itr)+1))];
     end
     disp(['out_dims: ' out_dims])
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

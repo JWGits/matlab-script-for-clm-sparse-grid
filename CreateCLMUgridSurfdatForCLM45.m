@@ -81,13 +81,8 @@ for idim = 1:ndims
 end
 
 if (time_found == 1)
-    [time_tmp] = find(strcmp(in_dim_name,'time'));
-    disp(['time_index: ' num2str(time_tmp)])
-    [in_time_id] = find(in_dim_id == time_tmp);
-    disp(['time: ' num2str(in_time_id)])
-    [dimname, dimlen] = netcdf.inqDim(ncid_inp, in_time_id-1);
-    disp(['time_dim: ' dimname])
-    disp(['tim_len: ' dimlen])
+    [time_index] = find(strcmp(in_dim_name,'time'));
+    [dimname, dimlen] = netcdf.inqDim(ncid_inp, time_index-1);
     last_dim = ndims + 1;
         if(unlimdimid(1) ~= -1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
@@ -118,15 +113,15 @@ for ivar = 1:nvars
         end
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'}
-            dim_inputs = ['gridcell'; setdiff(vdim_names, rm_lonlat)]
+            diminputs = ['gridcell'; setdiff(vdim_names, rm_lonlat)]
         else
-            dim_input = vdim_names 
+            diminput = vdim_names 
         end
     end
     out_dims = [];
-    if (isempty(dim_inputs)==0)
-        for dim_itr = 1:size(dim_inputs)
-            out_dims = [out_dims; out_dict(dim_inputs(dim_itr))];
+    if (isempty(diminputs)==0)
+        for dim_itr = 1:size(diminputs)
+            out_dims = [out_dims; out_dict(diminputs(dim_itr))];
         end
     end
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

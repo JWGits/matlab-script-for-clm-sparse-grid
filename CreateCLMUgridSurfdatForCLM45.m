@@ -99,8 +99,8 @@ if (time_found == 1)
 end
 in_dim_name_str = string(in_dim_name)
 out_dim_name_str = string(out_dim_name)
-%in_dim_name_str = [convertCharsToStrings(in_dim_name)]
-%out_dim_name_str = [convertCharsToStrings(out_dim_name)]
+in_dim_id = reshape(in_dim_id,size(in_dim_id),1)
+out_dim_id = reshape(out_dim_id,size(out_dim_id),1)
 in_dict = dictionary(in_dim_id, in_dim_name);
 out_dict = dictionary(out_dim_name, out_dim_id);
 

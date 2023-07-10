@@ -52,7 +52,7 @@ for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
     in_dim_id = [in_dim_id, idim];
-    in_dim_name = [in_dim_name, dimname];
+    in_dim_name = [in_dim_name, {dimname}];
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -63,27 +63,27 @@ for idim = 1:ndims
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
                 out_dim_id = [out_dim_id, idim];
-                out_dim_name = [out_dim_name, dimname];
+                out_dim_name = [out_dim_name, {dimname}];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             out_dim_id = [out_dim_id, idim];
-            out_dim_name = [out_dim_name, dimname];
+            out_dim_name = [out_dim_name, {dimname}];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
             out_dim_id = [out_dim_id, idim];
-            out_dim_name = [out_dim_name, dimname];
+            out_dim_name = [out_dim_name, {dimname}];
     end
 end
 
 if (time_found == 1)
-    time_tmp = find(strcmp(in_dim_name,'time'))
+    time_tmp = find(strcmpi(in_dim_name,'time'))
     disp(['time_index: ' time_tmp])
-    in_time_id = find(in_dim_id == time_tmp(1)); 
+    in_time_id = find(in_dim_id == time_tmp); 
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
     disp(['time_dim: ' dimname 'tim_len: ' dimlen])
     last_dim = ndims + 1;

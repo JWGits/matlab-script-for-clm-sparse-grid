@@ -109,7 +109,7 @@ for ivar = 1:nvars
         vdim_names = {};
         for dim_itr = 1:size(dim_ids)
             vdim_id = {dim_ids(dim_itr) + 1}
-            vdim_names = [vdim_names; in_dict(vdim_id{1})];
+            vdim_names = [vdim_names; in_dict(vdim_id)];
             fprintf('\ndimnames: ');
             fprintf('%s  ', vdim_names{:});
         end

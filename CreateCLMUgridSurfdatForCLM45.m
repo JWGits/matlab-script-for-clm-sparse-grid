@@ -51,7 +51,7 @@ out_dim_name = [];
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
-    in_dim_id = [in_dimid, idim];
+    in_dim_id = [in_dim_id, idim];
     in_dim_name = [in_dim_name, dimname];
     
     switch dimname

@@ -62,20 +62,20 @@ for idim = 1:ndims
                 dimlen = length(long_region);
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-                out_dim_id = [out_dim_id; idim];
+                %out_dim_id = [out_dim_id; idim];
                 out_dim_name = [out_dim_name; {dimname}];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            out_dim_id = [out_dim_id; idim];
+            %out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            out_dim_id = [out_dim_id; idim];
+            %out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
     end
 end
@@ -89,12 +89,12 @@ if (time_found == 1)
         else
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
-    out_dim_id = [out_dim_id; last_dim];
+    %out_dim_id = [out_dim_id; last_dim];
     out_dim_name = [out_dim_name; {dimname}]
 end
 
 in_dim_id = num2cell(in_dim_id)
-out_dim_id = num2cell(out_dim_id)
+out_dim_id = num2cell([1:numel(out_dim_name):1])
 in_dict = containers.Map(in_dim_id, in_dim_name)
 out_dict = containers.Map(out_dim_name, out_dim_id)
 

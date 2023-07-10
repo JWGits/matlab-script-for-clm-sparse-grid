@@ -101,8 +101,8 @@ in_dim_name_str = string(in_dim_name)
 out_dim_name_str = string(out_dim_name)
 in_dim_id = string(in_dim_id)
 out_dim_id = string(out_dim_id)
-in_dict = dictionary(in_dim_id, in_dim_name_str);
-out_dict = dictionary(out_dim_name_str, out_dim_id);
+in_dict = dictionary(in_dim_id(:,1), in_dim_name_str(:,1));
+out_dict = dictionary(out_dim_name_str(:,1), out_dim_id(:,1));
 disp(['input_dict: ' in_dict])
 disp(['output_dict: ' out_dict])
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

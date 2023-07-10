@@ -108,7 +108,7 @@ out_dict = containers.Map(out_dim_name, out_dim_id)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dimids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    disp(['varname : ' varname ' ' num2str(dimids)]) 
+    disp(['varname : ' varname ' ' num2str(dimids)])
     if(isempty(dimids)==0)
         if (lonlat_found)
             vdim_names = {};

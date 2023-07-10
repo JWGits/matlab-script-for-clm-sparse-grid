@@ -116,19 +116,26 @@ for ivar = 1:nvars
                 dimnames = [dimnames; {in_dict(dimids(dim_itr)+1)}]
             end
             if (strcmp(dimnames{1},'lsmlon') || strcmp(dimnames{1},'lsmlat'))  && (strcmp(dimnames{2},'lsmlon') || strcmp(dimnames{2},'lsmlat'))                dimids_new =  [0 dimids(3:end)-1];
-                dimids_new =  [0 dimids(3:end)-1]
+                out_dims = [];
+                dim_init = dimids(3:end)-1
+                if (isempty(dim_init)==0)
+                    disp(['unadjusted dim ids: ' num2str(dim_init)])
+                    for dim_itr = 1:numel(dim_init)
+                        out_name = in_dict(dim_init(dim_itr)+1)
+                        disp(['out_name: ' out_name{1}])
+                        out_dims = [out_dims; out_dict(out_name{1})];
+                    end
+                    disp(['out_dims: ' num2str(out_dims)])
+                end
+                dimids_new =  [0 out_dims]
                 dimids = dimids_new
             else
                 dimids = dimids - 1
             end
         end
     end
-    disp(['dimids: ' num2str(dimids)])
-    out_dims = [];
-    for dim_itr = 1:numel(dimids)
-        out_dims = [out_dims; out_dict({in_dict(dimids(dim_itr)+1)})];
-    end
-    disp(['out_dims: ' out_dims])
+    
+    
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);
     varnames{ivar} = varname;
     %disp([num2str(ivar) ') varname : ' varname ' ' num2str(dimids)])

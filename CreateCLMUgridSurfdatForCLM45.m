@@ -115,7 +115,7 @@ for ivar = 1:nvars
             for dim_itr = 1:numel(dimids)
                 dimnames = [dimnames; {in_dict(dimids(dim_itr)+1)}]
             end
-            disp(['dimnames: ' dimnames{1}])
+            disp(['dimnames: ' dimnames])
             if (strcmp(dimnames{1},'lsmlon') || strcmp(dimnames{1},'lsmlat'))  && (strcmp(dimnames{2},'lsmlon') || strcmp(dimnames{2},'lsmlat'))                dimids_new =  [0 dimids(3:end)-1];
                 out_dims = [];
                 dim_init = dimids(3:end)-1

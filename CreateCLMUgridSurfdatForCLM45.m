@@ -94,8 +94,8 @@ if (time_found == 1)
         else
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
-    out_dim_id = [out_dim_id, last_dim];
-    out_dim_name = [out_dim_name, {dimname}];
+    out_dim_id = [out_dim_id, last_dim]
+    out_dim_name = [out_dim_name, {dimname}]
 end
 in_dict = dictionary(in_dim_id, cell2mat(in_dim_name));
 out_dict = dictionary(cell2mat(out_dim_name), out_dim_id);

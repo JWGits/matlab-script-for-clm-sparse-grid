@@ -111,31 +111,26 @@ for ivar = 1:nvars
     fprintf('varname: %s \n dimids: \n', varname);
     fprintf('%d,\n', dim_ids);
     if(isempty(dim_ids)==0)
-        if (lonlat_found)
-            vdim_names = {};
-            for dim_itr = 1:size(dim_ids)
-                dim_name = char(in_dict(dim_ids(dim_itr)+1));
-                vdim_names = [vdim_names; {dim_name}];
-            end
-            if any(strcmp(vdim_names,'lsmlon'))
-                dim_grid = str2num(out_dict('lsmlon'))
-                dim_init = dim_ids(3:end)-1
-            else
-                dim_init = dim_ids - 1
-            end
+        vdim_names = {};
+        for dim_itr = 1:size(dim_ids)
+            dim_name = in_dict(dim_ids(dim_itr)+1);
+            vdim_names = [vdim_names; {dim_name{1}}];
+        end
+        if any(strcmp(vdim_names,'lsmlon'))
+            rm_lonlat = {'lsmlon';'lsmlat'}
+            dim_init = setdiff(vdim_names, rm_lonlat)
+            dim_init = ['gridcell'; dim_init]
+        else
+            dim_init = vdim_names 
         end
         dim_init=[];
     end
-    
+    out_dims = [];
     if (isempty(dim_init)==0)
-        end
-        if any(strcmp(vdim_names,'lsmlon'))
-            out_dims = [dim_grid dim_init]
-        else
-            out_dims = dim_init
+        for dim_itr = 1:numel(dim_init)
+            out_dims = [out_dims; out_dict(dim_init(dim_itr))];
         end
     end
-        
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);
     varnames{ivar} = varname;
     %disp([num2str(ivar) ') varname : ' varname ' ' num2str(dimids)])

@@ -113,9 +113,9 @@ for ivar = 1:nvars
         if (lonlat_found)
             dimnames = [];
             for dim_itr = 1:numel(dimids)
-                dimnames = [dimnames, dimids(dim_itr)]
+                dimnames = [dimnames, in_dict(dimids(dim_itr)+1)]
             end
-            if ((dimname(1)=='lsmlon') | (dimname(1)=='lsmlat'))  && ((dimids(2)=='lsmlat') | (dimids(2)=='lsmlon'))
+            if ((dimnames(1)=='lsmlon') || (dimnames(1)=='lsmlat'))  && ((dimnames(2)=='lsmlat') || (dimnames(2)=='lsmlon'))
                 dimids_new =  [0 dimids(3:end)-1];
                 dimids = dimids_new;
             else
@@ -124,8 +124,8 @@ for ivar = 1:nvars
         end
     end
     out_dims = [];
-    for dim_itr = 1:size(dimids,1)
-        out_dims = [out_dims, out_dict(in_dict(dimids(dim_itr)))];
+    for dim_itr = 1:numel(dimids)
+        out_dims = [out_dims, out_dict(in_dict(dimids(dim_itr)+1))];
     end
     disp(['out_dims: ' out_dims])
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

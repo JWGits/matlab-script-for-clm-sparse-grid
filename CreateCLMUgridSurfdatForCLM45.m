@@ -84,7 +84,7 @@ if (time_found == 1)
     in_time_id = find(in_dim_id == find(strcmp(in_dim_name,'time'))); 
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
     disp(['time_dim: ' dimname 'tim_len: ' dimlen])
-    last_dim = ndims + 1
+    last_dim = ndims + 1;
         if(isempty(unlimdimid)==0)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
         else
@@ -132,7 +132,6 @@ for ivar = 1:nvars
     for iatt = 1:natts
         attname = netcdf.inqAttName(ncid_inp,ivar-1,iatt-1);
         attvalue = netcdf.getAtt(ncid_inp,ivar-1,attname);
-        
         netcdf.putAtt(ncid_out,ivar-1,attname,attvalue);
     end
     

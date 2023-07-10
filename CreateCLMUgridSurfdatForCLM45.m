@@ -93,7 +93,7 @@ if (time_found == 1)
     out_dim_name = [out_dim_name, dimnames];
 end
 in_dict = dictionary(in_dim_id, in_dim_name);
-out_dict = dictonary(out_dim_id, out_dim_name);
+out_dict = dictonary(out_dim_name, out_dim_id);
 
 disp(['input_dict: ' in_dict])
 disp(['output_dict: ' out_dict])
@@ -119,8 +119,9 @@ for ivar = 1:nvars
             end
         end
     end
+    out_dims = [];
     for dim_itr = 1:size(dimids)
-        [out_dims] = 
+        out_dims = [out_dims, out_dict(in_dict(dimids(dim_itr)))];
     end
     disp(['out_dims: ' out_dims])
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

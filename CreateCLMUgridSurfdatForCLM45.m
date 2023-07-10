@@ -95,7 +95,7 @@ if (time_found == 1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
     out_dim_id = [out_dim_id, last_dim]
-    out_dim_name = [out_dim_name, {dimname}]
+    out_dim_name = [out_dim_name; {dimname}]
 end
 in_dim_name_str = string(in_dim_name)
 out_dim_name_str = string(out_dim_name)

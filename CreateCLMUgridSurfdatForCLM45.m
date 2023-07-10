@@ -122,7 +122,6 @@ for ivar = 1:nvars
         else
             dim_input = vdim_names 
         end
-        dim_inputs=[];
     end
     out_dims = [];
     if (isempty(dim_inputs)==0)

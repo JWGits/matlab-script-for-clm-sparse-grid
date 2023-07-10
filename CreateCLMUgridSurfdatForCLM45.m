@@ -89,6 +89,7 @@ if (time_found == 1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
         else
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
+        end
     out_dim_id = [out_dim_id, last_dim];
     out_dim_name = [out_dim_name, dimnames];
 end

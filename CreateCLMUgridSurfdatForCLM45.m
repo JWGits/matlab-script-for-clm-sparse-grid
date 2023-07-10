@@ -43,13 +43,16 @@ info_inp = ncinfo(clm_gridded_surfdata_filename)
 dimid(1:ndims) = -1;
 lonlat_found = 0;
 time_found = 0;
-dim_inpmap = containers.Map();
-dim_outmap = containers.Map();
+in_dim_id = [];
+in_dim_name = [];
+out_dim_id = [];
+out_dim_name = [];
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
-    dim_inpmap(idim) = dimname;
+    in_dim_id = [in_dimid, idim];
+    in_dim_name = [in_dim_name, dimname];
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -59,28 +62,40 @@ for idim = 1:ndims
                 dimlen = length(long_region);
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-                dim_outmap(idim) = dimname;
+                out_dim_id = [out_dim_id, idim];
+                out_dim_name = [out_dim_name, dimname];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            dim_outmap(idim) = dimname;
+            out_dim_id = [out_dim_id, idim];
+            out_dim_name = [out_dim_name, dimname];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            dim_outmap(idim) = dimname;
+            out_dim_id = [out_dim_id, idim];
+            out_dim_name = [out_dim_name, dimname];
     end
 end
+
 if (time_found == 1)
-    dimname = 'time';
+    in_time_id = in_dim_id[find(in_dim_name=='time')]
+    [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
     last_dim = ndims + 1
-    dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
-    dim_outmap(idim) = dimname;
+        if(isempty(unlimdimid)==0)
+            dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
+        else
+            dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
+    out_dim_id = [out_dim_id, last_dim];
+    out_dim_name = [out_dim_name, dimnames];
 end
-disp(['input_map: ' dim_inpmap])
-disp(['output_map: ' dim_outmap])
+in_dict = dictionary(in_dim_id, in_dim_name);
+out_dict = dictonary(out_dim_id, out_dim_name);
+
+disp(['input_dict: ' in_dict])
+disp(['output_dict: ' out_dict])
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables
@@ -91,8 +106,9 @@ for ivar = 1:nvars
     disp(['varname : ' varname ' ' num2str(dimids)]) 
     if(isempty(dimids)==0)
         if (lonlat_found)
+            dimnames = [];
             for dim_itr = 1:size(dimids,1)
-                [dimname, dimlen] = netcdf.inqDim(ncid_inp,dim_itr);
+                dimnames = [dimnames, in_dict(dimids(dim_itr))];
             end
             if ((dimname(1)=='lsmlon') | (dimname(1)=='lsmlat'))  && ((dimids(2)=='lsmlat') | (dimids(2)=='lsmlon'))
                 dimids_new =  [0 dimids(3:end)-1];
@@ -103,7 +119,7 @@ for ivar = 1:nvars
         end
     end
     for dim_itr = 1:size(dimids)
-        [out_dims] = dim_map(dim_itr)
+        [out_dims] = 
     end
     disp(['out_dims: ' out_dims])
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

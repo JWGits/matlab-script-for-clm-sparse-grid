@@ -85,7 +85,7 @@ if (time_found == 1)
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
     disp(['time_dim: ' dimname 'tim_len: ' dimlen])
     last_dim = ndims + 1;
-        if(unlimdimid > -1)
+        if(unlimdimid(1) ~= -1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
         else
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);

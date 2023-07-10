@@ -118,17 +118,16 @@ for ivar = 1:nvars
         end
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'}
-            dim_init = setdiff(vdim_names, rm_lonlat)
-            dim_init = ['gridcell'; dim_init]
+            dim_inputs = ['gridcell'; setdiff(vdim_names, rm_lonlat)]
         else
-            dim_init = vdim_names 
+            dim_input = vdim_names 
         end
-        dim_init=[];
+        dim_inputs=[];
     end
     out_dims = [];
-    if (isempty(dim_init)==0)
-        for dim_itr = 1:numel(dim_init)
-            out_dims = [out_dims; out_dict(dim_init(dim_itr))];
+    if (isempty(dim_inputs)==0)
+        for dim_itr = 1:size(dim_inputs)
+            out_dims = [out_dims; out_dict(dim_inputs(dim_itr))];
         end
     end
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

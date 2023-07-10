@@ -56,7 +56,7 @@ for idim = 1:ndims
     
     switch dimname
         case {'lsmlon','lsmlat'}
-            if (lonlat_found == 0)
+            if (lonlat_found == 0) & (dimname == 'lsmlon')
                 lonlat_found = 1;
                 dimname = 'gridcell';
                 dimlen = length(long_region);
@@ -99,8 +99,8 @@ if (time_found == 1)
 end
 in_dim_id = num2cell(in_dim_id);
 out_dim_id = num2cell(out_dim_id);
-in_dict = containers.Map(in_dim_id, in_dim_name);
-out_dict = containers.Map(out_dim_name, out_dim_id);
+in_dict = containers.Map(in_dim_id, in_dim_name)
+out_dict = containers.Map(out_dim_name, out_dim_id)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables
@@ -109,37 +109,33 @@ out_dict = containers.Map(out_dim_name, out_dim_id);
 for ivar = 1:nvars
     [varname,xtype,dim_ids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
     fprintf('varname: %s \n dimids: \n', varname);
-    fprintf('%d,\n', isempty(dim_ids));
+    fprintf('%d,\n', dim_ids);
     if(isempty(dim_ids)==0)
         if (lonlat_found)
-        vdim_names = {};
-            for dim_itr = 1:size(dimids)
-                dim_name = char(in_dict(dimids(dim_itr)+1));
+            vdim_names = {};
+            for dim_itr = 1:size(dim_ids)
+                dim_name = char(in_dict(dim_ids(dim_itr)+1));
                 vdim_names = [vdim_names; {dim_name}];
             end
-            if (strcmp(vdim_names{1},'lsmlon') || strcmp(vdim_names{1},'lsmlat'))  && (strcmp(vdim_names{2},'lsmlon') || strcmp(vdim_names{2},'lsmlat'))
-                output_dims = {};
-                dim_init = dimids(3:end)-1;
-                if (isempty(dim_init)==0)
-                    disp(['unadjusted dim ids: ' num2str(dim_init)])
-                    for dim_itr = 1:numel(dim_init)
-                        out_name = in_dict(dim_init(dim_itr)+1);
-                        disp(['out_name: ' out_name{1}])
-                        out_d = out_dict(out_name);
-                        output_dims = [output_dims; {out_d}];
-                    end
-                    disp(['out_dims: ' num2str(out_dims)])
-                end
-                dimids_new =  [0 out_dims];
-                dimids = dimids_new;
+            if any(strcmp(vdim_names,'lsmlon'))
+                dim_grid = str2num(out_dict('lsmlon'))
+                dim_init = dim_ids(3:end)-1
             else
-                dimids = dimids - 1;
+                dim_init = dim_ids - 1
             end
         end
-    else
-        out_dims = [];
+        dim_init=[];
     end
     
+    if (isempty(dim_init)==0)
+        end
+        if any(strcmp(vdim_names,'lsmlon'))
+            out_dims = [dim_grid dim_init]
+        else
+            out_dims = dim_init
+        end
+    end
+        
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);
     varnames{ivar} = varname;
     %disp([num2str(ivar) ') varname : ' varname ' ' num2str(dimids)])

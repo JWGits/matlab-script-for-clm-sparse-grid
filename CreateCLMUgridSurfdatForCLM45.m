@@ -111,14 +111,14 @@ for ivar = 1:nvars
     disp(['varname : ' varname ' ' num2str(dimids)]) 
     if(isempty(dimids)==0)
         if (lonlat_found)
-            vdim_names = {};
-            for dim_itr = 1:numel(dimids)
-                vdim_names = [vdim_names; {in_dict(dimids(dim_itr)+1)}]
-            end
-	    disp(vdim_names{1})
-            if (strcmp(vdim_names{1},'lsmlon') || strcmp(vdim_names{1},'lsmlat'))  && (strcmp(vdim_names{2},'lsmlon') || strcmp(vdim_names{2},'lsmlat'))
-                out_dims = [];
-                dim_init = dimids(3:end)-1
+			vdim_names = {};
+			for dim_itr = 1:numel(dimids)
+				vdim_names = [vdim_names; {in_dict(dimids(dim_itr)+1)}]
+			end
+			disp(vdim_names{1})
+   			if (strcmp(vdim_names{1},'lsmlon') || strcmp(vdim_names{1},'lsmlat'))  && (strcmp(vdim_names{2},'lsmlon') || strcmp(vdim_names{2},'lsmlat'))
+	  			out_dims = [];
+	  			dim_init = dimids(3:end)-1
                 if (isempty(dim_init)==0)
                     disp(['unadjusted dim ids: ' num2str(dim_init)])
                     for dim_itr = 1:numel(dim_init)

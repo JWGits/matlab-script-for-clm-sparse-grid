@@ -116,7 +116,7 @@ for ivar = 1:nvars
         if any(strcmp(vdim_names,'lsmlon'))
             rm_lonlat = {'lsmlon';'lsmlat'}
             dimupdate = setdiff(vdim_names, rm_lonlat)
-            diminputs = {['gridcell'; dimupdate{:}]}
+            diminputs = {{'gridcell'}; dimupdate{:}}
         else
             diminputs = vdim_names 
         end

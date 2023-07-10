@@ -103,7 +103,7 @@ out_dict = containers.Map(out_dim_name, out_dim_id)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dim_ids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    fprintf('varname: %s \n dimids: ', varname);
+    fprintf('\nvarname: %s \ndimids: ', varname);
     fprintf('%d  ', dim_ids);
     if(isempty(dim_ids)==0)
         vdim_names = {};
@@ -122,7 +122,7 @@ for ivar = 1:nvars
     out_dims = [];
     if (isempty(diminputs)==0)
         for dim_itr = 1:size(diminputs)
-            out_dims = [out_dims; out_dict(diminputs(dim_itr))];
+            out_dims = [out_dims; cell2mat(out_dict(diminputs(dim_itr)))];
         end
     end
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

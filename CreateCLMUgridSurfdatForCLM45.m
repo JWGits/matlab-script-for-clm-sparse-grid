@@ -52,8 +52,10 @@ for idim = 1:ndims
         if (strcmp(dimname, 'time'))
             time_found = 1;
             continue
+        end
     elseif (time_found == 1)
         idim = idim - 1
+    end
         
     switch dimname
         case {'lsmlon','lsmlat'}

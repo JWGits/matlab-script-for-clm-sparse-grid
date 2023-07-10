@@ -83,9 +83,11 @@ end
 if (time_found == 1)
     [time_tmp] = find(strcmpi(in_dim_name,'time'))
     disp(['time_index: ' time_tmp])
-    [in_time_id] = find(in_dim_id == time_tmp); 
+    [in_time_id] = find(in_dim_id == time_tmp)
+    disp(['time: ' in_time_id])
     [dimname, dimlen] = netcdf.inqDim(ncid_inp, in_time_id-1);
-    disp(['time_dim: ' dimname 'tim_len: ' dimlen])
+    disp(['time_dim: ' dimname])
+    disp(['tim_len: ' dimlen])
     last_dim = ndims + 1;
         if(unlimdimid(1) ~= -1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
@@ -93,7 +95,7 @@ if (time_found == 1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
     out_dim_id = [out_dim_id, last_dim];
-    out_dim_name = [out_dim_name, dimnames];
+    out_dim_name = [out_dim_name, dimname];
 end
 in_dict = dictionary(in_dim_id, in_dim_name);
 out_dict = dictonary(out_dim_name, out_dim_id);

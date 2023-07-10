@@ -131,7 +131,8 @@ for ivar = 1:nvars
     out_dims = [];
     if (isempty(diminputs)==0)
         for dim_itr = 1:numel(diminputs)
-            out_dims = [out_dims; out_dict(char(diminputs(dim_itr)))];
+            vdim_out = {diminputs(double(dim_itr))}
+            out_dims = [out_dims; out_dict(vdim_out)]
         end
     end
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

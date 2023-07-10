@@ -136,6 +136,8 @@ for ivar = 1:nvars
                 dimids = dimids - 1;
             end
         end
+    else
+        out_dims = [];
     end
     
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

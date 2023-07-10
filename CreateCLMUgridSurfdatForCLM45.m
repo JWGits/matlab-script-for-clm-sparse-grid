@@ -82,9 +82,9 @@ end
 
 if (time_found == 1)
     [time_tmp] = find(strcmp(in_dim_name,'time'));
-    disp(['time_index: ' time_tmp])
+    disp(['time_index: ' num2str(time_tmp)])
     [in_time_id] = find(in_dim_id == time_tmp);
-    disp(['time: ' in_time_id])
+    disp(['time: ' num2str(in_time_id)])
     [dimname, dimlen] = netcdf.inqDim(ncid_inp, in_time_id-1);
     disp(['time_dim: ' dimname])
     disp(['tim_len: ' dimlen])
@@ -108,7 +108,8 @@ out_dict = containers.Map(out_dim_name, out_dim_id);
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dimids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    disp(['varname : ' varname ' ' num2str(dimids)])
+    fprintf('varname: %s \n dimids: \n', varname);
+    fprintf('dimids %.0d,\n', dimids);
     if(isempty(dimids)==0)
         if (lonlat_found)
         vdim_names = {};

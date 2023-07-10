@@ -112,8 +112,8 @@ for ivar = 1:nvars
     if(isempty(dimids)==0)
         if (lonlat_found)
             dimnames = [];
-            for dim_itr = 1:size(dimids,1)
-                dimnames = [dimnames, dimids(dim_itr)];
+            for dim_itr = 1:numel(dimids)
+                dimnames = [dimnames, dimids(dim_itr)]
             end
             if ((dimname(1)=='lsmlon') | (dimname(1)=='lsmlat'))  && ((dimids(2)=='lsmlat') | (dimids(2)=='lsmlon'))
                 dimids_new =  [0 dimids(3:end)-1];

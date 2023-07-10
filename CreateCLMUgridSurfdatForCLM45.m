@@ -81,9 +81,9 @@ for idim = 1:ndims
 end
 
 if (time_found == 1)
-    [time_tmp] = find(strcmp(in_dim_name,'time'))
+    [time_tmp] = find(strcmp(in_dim_name,'time'));
     disp(['time_index: ' time_tmp])
-    [in_time_id] = find(in_dim_id == time_tmp)
+    [in_time_id] = find(in_dim_id == time_tmp);
     disp(['time: ' in_time_id])
     [dimname, dimlen] = netcdf.inqDim(ncid_inp, in_time_id-1);
     disp(['time_dim: ' dimname])
@@ -94,13 +94,13 @@ if (time_found == 1)
         else
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
-    out_dim_id = [out_dim_id; last_dim]
-    out_dim_name = [out_dim_name; {dimname}]
+    out_dim_id = [out_dim_id; last_dim];
+    out_dim_name = [out_dim_name; {dimname}];
 end
-in_dim_id = num2cell(in_dim_id)
-out_dim_id = num2cell(out_dim_id)
-in_dict = containers.Map(in_dim_id, in_dim_name)
-out_dict = containers.Map(out_dim_name, out_dim_id)
+in_dim_id = num2cell(in_dim_id);
+out_dim_id = num2cell(out_dim_id);
+in_dict = containers.Map(in_dim_id, in_dim_name);
+out_dict = containers.Map(out_dim_name, out_dim_id);
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables
@@ -112,26 +112,28 @@ for ivar = 1:nvars
     if(isempty(dimids)==0)
         if (lonlat_found)
         vdim_names = {};
-            for dim_itr = 1:numel(dimids)
-                vdim_names = [vdim_names; in_dict(dimids(dim_itr)+1)]
+            for dim_itr = 1:size(dimids)
+                dim_name = in_dict(dimids(dim_itr)+1);
+                vdim_names = [vdim_names; {dim_name}];
             end
-            disp(vdim_names)
+            vdim_names
             if (strcmp(vdim_names{1},'lsmlon') || strcmp(vdim_names{1},'lsmlat'))  && (strcmp(vdim_names{2},'lsmlon') || strcmp(vdim_names{2},'lsmlat'))
-                out_dims = [];
-                dim_init = dimids(3:end)-1
+                output_dims = {};
+                dim_init = dimids(3:end)-1;
                 if (isempty(dim_init)==0)
                     disp(['unadjusted dim ids: ' num2str(dim_init)])
                     for dim_itr = 1:numel(dim_init)
-                        out_name = in_dict(dim_init(dim_itr)+1)
+                        out_name = in_dict(dim_init(dim_itr)+1);
                         disp(['out_name: ' out_name{1}])
-                        out_dims = [out_dims; out_dict(out_name{1})];
+                        out_d = out_dict(out_name);
+                        output_dims = [output_dims; {out_d}];
                     end
                     disp(['out_dims: ' num2str(out_dims)])
                 end
-                dimids_new =  [0 out_dims]
-                dimids = dimids_new
+                dimids_new =  [0 out_dims];
+                dimids = dimids_new;
             else
-                dimids = dimids - 1
+                dimids = dimids - 1;
             end
         end
     end

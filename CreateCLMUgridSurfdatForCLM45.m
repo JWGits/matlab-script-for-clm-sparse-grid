@@ -81,10 +81,10 @@ for idim = 1:ndims
 end
 
 if (time_found == 1)
-    time_tmp = find(strcmpi(in_dim_name,'time'))
+    [time_tmp] = find(strcmpi(in_dim_name,'time'))
     disp(['time_index: ' time_tmp])
-    in_time_id = find(in_dim_id == time_tmp); 
-    [dimname, dimlen] = netcdf.inqDim(ncid_inp,in_time_id-1);
+    [in_time_id] = find(in_dim_id == time_tmp); 
+    [dimname, dimlen] = netcdf.inqDim(ncid_inp, in_time_id-1);
     disp(['time_dim: ' dimname 'tim_len: ' dimlen])
     last_dim = ndims + 1;
         if(unlimdimid(1) ~= -1)

@@ -86,8 +86,8 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dimids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    %dimids = flipud(dimids)
-    %natts = flipud(natts)
+    dimids = flip(dimids)
+    natts = flip(natts)
     disp(['varname : ' varname ' ' num2str(dimids)])
     if(isempty(dimids)==0)
         if (lonlat_found)

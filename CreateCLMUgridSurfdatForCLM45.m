@@ -44,9 +44,9 @@ dimid(1:ndims) = -1;
 lonlat_found = 0;
 time_found = 0;
 in_dim_id = [];
-in_dim_name = [];
+in_dim_name = {};
 out_dim_id = [];
-out_dim_name = [];
+out_dim_name = {};
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);

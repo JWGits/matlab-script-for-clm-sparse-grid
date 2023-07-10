@@ -90,7 +90,7 @@ if (time_found == 1)
             dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
         end
     out_dim_id = [out_dim_id; last_dim];
-    out_dim_name = [out_dim_name; {dimname}];
+    out_dim_name = [out_dim_name; {dimname}]
 end
 in_dim_id = num2cell(in_dim_id)
 out_dim_id = num2cell(out_dim_id)
@@ -108,13 +108,13 @@ for ivar = 1:nvars
     if(isempty(dim_ids)==0)
         vdim_names = {};
         for dim_itr = 1:size(dim_ids,1)
-            vdim_id = dim_ids(dim_itr) + 1
+            vdim_id = double(dim_ids(dim_itr)+1)
             vdim_names = [vdim_names; in_dict(vdim_id)];
             fprintf('\ndimnames: ');
             fprintf('%s  ', vdim_names{:});
         end
         if any(strcmp(vdim_names,'lsmlon'))
-            rm_lonlat = {'lsmlon';'lsmlat'};
+            rm_lonlat = {'lsmlon';'lsmlat'}
             dimupdate = setdiff(vdim_names, rm_lonlat)
             diminputs = {['gridcell'; dimupdate{:}]}
         else

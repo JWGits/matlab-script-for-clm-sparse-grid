@@ -81,7 +81,7 @@ for idim = 1:ndims
 end
 
 if (time_found == 1)
-    [time_tmp] = find(strcmpi(in_dim_name,'time'))
+    [time_tmp] = find(strcmp(in_dim_name,'time'))
     disp(['time_index: ' time_tmp])
     [in_time_id] = find(in_dim_id == time_tmp)
     disp(['time: ' in_time_id])

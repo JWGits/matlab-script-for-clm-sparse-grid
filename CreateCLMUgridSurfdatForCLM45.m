@@ -207,8 +207,7 @@ for ivar = 1:nvars
         case {'LONGXY'}
             netcdf.putVar(ncid_out,ivar-1,long_region);
         otherwise
-
-            dimnames
+        
             switch length(vardimids)
                 case 0
                     netcdf.putVar(ncid_out,ivar-1,data);
@@ -227,7 +226,7 @@ for ivar = 1:nvars
                     if any(ismember(vdim_names, spatial_dims)) 
                         
                         if (lonlat_found)
-                            data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data);
+                            data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
                             data_new = PerformFractionCoverCheck(varname, data_1d, set_natural_veg_frac_to_one);
                         else
                             data_2d = ugrid_convert_2d_to_2d(ii_idx, data);
@@ -241,7 +240,7 @@ for ivar = 1:nvars
                 case 3
                     if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
-                            data_2d  = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data);
+                            data_2d  = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
                             data_new = PerformFractionCoverCheck(varname, data_2d, set_natural_veg_frac_to_one);
                             netcdf.putVar(ncid_out,ivar-1,data_new);
                         else
@@ -256,7 +255,7 @@ for ivar = 1:nvars
                 case 4
                     if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
-                            data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data);
+                            data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
                         else
                             disp('error')
                         end

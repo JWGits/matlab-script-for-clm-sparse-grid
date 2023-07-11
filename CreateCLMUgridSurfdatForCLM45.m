@@ -182,6 +182,8 @@ for ivar = 1:nvars
     %disp(varnames{ivar})
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
+    out_dims = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
+    vardimids = out_dims;
     switch varname
         case {'LATIXY'}
             netcdf.putVar(ncid_out,ivar-1,lati_region);
@@ -204,7 +206,7 @@ for ivar = 1:nvars
                     end
                     netcdf.putVar(ncid_out,ivar-1,0,length(data),data);
                 case 2
-                    if (min(vardimids) == 0)
+                    if (min(vardimids) == 0) 
                         
                         if (lonlat_found)
                             data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data);
@@ -271,8 +273,8 @@ for ii=1:size(ii_idx,1)
 end
 
 % (lon,lat) --> % (gridcell)
-vardimids_new =  [0 vardimids(3:end)-1];
-vardimids = vardimids_new;
+%vardimids_new =  [0 vardimids(3:end)-1];
+%vardimids = vardimids_new;
 dims = size(data_2d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -308,8 +310,8 @@ for ii = 1:nx
 end
 
 % (lon,lat,:) --> % (gridcell,:)
-vardimids_new =  [0 vardimids(3:end)-1];
-vardimids = vardimids_new;
+%vardimids_new =  [0 vardimids(3:end)-1];
+%vardimids = vardimids_new;
 dims = size(data_3d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -354,8 +356,8 @@ for ii = 1:nx
 end
 
 % (lon,lat,:) --> % (gridcell,:)
-vardimids_new =  [0 vardimids(3:end)-1];
-vardimids = vardimids_new;
+%vardimids_new =  [0 vardimids(3:end)-1];
+%vardimids = vardimids_new;
 dims = size(data_4d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];

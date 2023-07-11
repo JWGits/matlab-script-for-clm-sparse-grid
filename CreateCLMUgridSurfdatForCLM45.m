@@ -182,8 +182,7 @@ for ivar = 1:nvars
     %disp(varnames{ivar})
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
-    out_dims = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
-    vardimids = out_dims;
+
     switch varname
         case {'LATIXY'}
             netcdf.putVar(ncid_out,ivar-1,lati_region);
@@ -262,7 +261,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 2D data (lat,lon) to 1D (gridcell)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data)
+function data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
 
 data_2d = zeros(size(ii_idx));
 
@@ -275,6 +274,7 @@ end
 % (lon,lat) --> % (gridcell)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
+vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_2d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -297,7 +297,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 3D data (lat,lon,:) to 2D (gridcell,:)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_2d = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data)
+function data_2d = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
 
 nx = size(ii_idx,1);
 ny = size(jj_idx,2);
@@ -312,6 +312,7 @@ end
 % (lon,lat,:) --> % (gridcell,:)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
+vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_3d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -341,7 +342,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 4D data (lat,lon,:,:) to 3D (gridcell,:,:)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data)
+function data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
 
 nx = size(ii_idx,1);
 ny = size(ii_idx,2);
@@ -358,6 +359,7 @@ end
 % (lon,lat,:) --> % (gridcell,:)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
+vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_4d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -372,7 +374,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Maps between input and output dimension numbers 
 % Deals with surface datasets with variable dimension order (unlimited time first, etc.)
-% in conjunction with changes to define dims that puts time last
+% in conjunction with changes to the "Define dims" section that puts time last
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
     
@@ -405,7 +407,7 @@ out_dims = [];
 if (isempty(diminputs)==0)
     for dim_itr = 1:numel(diminputs)
         vdim_out = char(diminputs(dim_itr))
-        out_dims = [out_dims; out_dict(vdim_out)]
+        out_dims = [out_dims, out_dict(vdim_out)]
     end
 end
 

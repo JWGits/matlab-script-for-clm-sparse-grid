@@ -183,7 +183,7 @@ for ivar = 1:nvars
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
 
-    % I believe looking for variable ID == 0 below was an attempt to find spatial dimensions - this is ambiguous
+    % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this is ambiguous
     % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
     % I used Python/Xarray, which doesnt fix/garuntee dimension order of the dimension list, to manipulate CLM surface data
     % variables are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list

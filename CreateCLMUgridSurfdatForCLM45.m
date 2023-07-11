@@ -186,9 +186,9 @@ for ivar = 1:nvars
     % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this is ambiguous
     % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
     % I used Python/Xarray, which doesnt fix/garuntee dimension order of the dimension list, to manipulate CLM surface data
-    % variables are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list
+    % variable dims are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list
     % The data variables are also transposed properly by the netcdf API when read into Matlab vs Python as expected
-    % but, the dimension list is often ordered differently leading to problems defining dimension ids in this code
+    % but, the dimension list is not fully controllable in python/xarray and can be output in differen orders
     % this is most problematic with the UNLIMITED time dim that is output first by Xarray but must be defined last in Matlab
     % the work around here has been to define time last and simply map associations between input vs output dim numbers based on dimnames            
     % instead of checking for a dim number of zero, i confirm a spatial dim before converting the data below

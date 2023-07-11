@@ -99,7 +99,6 @@ out_dim_id = num2cell(out_dim_id)
 %out_dim_id = [1:numel(out_dim_name)]'
 in_dict = containers.Map(in_dim_id, in_dim_name)
 out_dict = containers.Map(out_dim_name, out_dim_id)
-
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables

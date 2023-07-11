@@ -62,20 +62,17 @@ for idim = 1:ndims
                 dimlen = length(long_region);
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-                %out_dim_id = [out_dim_id; idim];
                 out_dim_name = [out_dim_name; {dimname}];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            %out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            %out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
     end
 end
@@ -90,12 +87,10 @@ if (time_found == 1)
     else
         dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
     end
-    %out_dim_id = [out_dim_id; last_dim];
     out_dim_name = [out_dim_name; {dimname}]
 end
 
 in_dim_id = num2cell(in_dim_id)
-%out_dim_id = num2cell(out_dim_id)
 out_dim_id = [1:numel(out_dim_name)]'-1
 out_dim_id = num2cell(out_dim_id)
 in_dict = containers.Map(in_dim_id, in_dim_name)
@@ -109,38 +104,9 @@ for ivar = 1:nvars
     [varname,xtype,dim_ids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
     fprintf('\nvarname: %s \ndimids: ', varname);
     fprintf(' %d   ', dim_ids);
-    if(isempty(dim_ids)==0)
-        vdim_names = {};
-        for dim_itr = 1:numel(dim_ids)
-            vdim_id = double(dim_ids(dim_itr)+1)
-            vdim_names = [vdim_names; in_dict(vdim_id)];
-            fprintf('\ndimnames: ');
-            fprintf('%s  ', vdim_names{:});
-        end
-        if any(strcmp(vdim_names,'lsmlon'))
-            rm_lonlat = {'lsmlon';'lsmlat'}
-            dimupdate = setdiff(vdim_names, rm_lonlat)
-            if(isempty(dimupdate) == 0)
-                diminputs = {'gridcell'};
-                for i = 1:numel(dimupdate)
-                    diminputs = [diminputs; dimupdate{i}]
-                end
-            else
-                diminputs = {'gridcell'}
-            end
-        else
-            diminputs = vdim_names 
-        end
-    else
-        diminputs = [];
-    end
-    out_dims = [];
-    if (isempty(diminputs)==0)
-        for dim_itr = 1:numel(diminputs)
-            vdim_out = char(diminputs(double(dim_itr)))
-            out_dims = [out_dims; out_dict(vdim_out)]
-        end
-    end
+
+    out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
+    
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);
     varnames{ivar} = varname;
     %disp([num2str(ivar) ') varname : ' varname ' ' num2str(dimids)])
@@ -398,5 +364,48 @@ else
 end
 
 data_3d = reshape(data_4d,dims_new);
+
+end
+
+% +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% Maps between input and output dimension numbers 
+% Deals with surface datasets with variable dimension order (unlimited time first, etc.)
+% in conjunction with changes to define dims that puts time last
+% +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
+    
+if(isempty(dim_ids)==0)
+    vdim_names = {};
+    for dim_itr = 1:numel(dim_ids)
+        vdim_id = double(dim_ids(dim_itr)+1)
+        vdim_names = [vdim_names; in_dict(vdim_id)];
+        fprintf('\ndimnames: ');
+        fprintf('%s  ', vdim_names{:});
+    end
+    if any(strcmp(vdim_names,'lsmlon'))
+        rm_lonlat = {'lsmlon';'lsmlat'}
+        dimupdate = setdiff(vdim_names, rm_lonlat)
+        if(isempty(dimupdate) == 0)
+            diminputs = {'gridcell'};
+            for i = 1:numel(dimupdate)
+                diminputs = [diminputs; dimupdate{i}]
+            end
+        else
+            diminputs = {'gridcell'}
+        end
+    else
+        diminputs = vdim_names 
+    end
+else
+    diminputs = [];
+end
+out_dims = [];
+if (isempty(diminputs)==0)
+    for dim_itr = 1:numel(diminputs)
+        vdim_out = char(diminputs(double(dim_itr)))
+        out_dims = [out_dims; out_dict(vdim_out)]
+    end
+end
+
 
 end

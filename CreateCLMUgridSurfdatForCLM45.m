@@ -183,13 +183,33 @@ for ivar = 1:nvars
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
 
+    % I believe looking for variable ID == 0 below was an attempt to find spatial dimensions - this is ambiguous
+    % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
+    % I used Python/Xarray, which doesnt fix/garuntee dimension order of the dimension list, to manipulate CLM surface data
+    % variables are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list
+    % The data variables are also transposed properly by the netcdf API when read into Matlab vs Python as exected
+    % but, the dimension list is often ordered differently leading to problems defining dimension ids based on the dim list 
+    % this is most problematic with the UNLIMITED time dim that is output first by Xarray but must be defined last in Matlab
+    % the work around here has been to define time last and simply map associations between input vs output dim numbers based on dimnames            
+    % instead of checking for a dim number of zero, i confirm a spatial dim before converting the data
+    
+    spatial_dims = {'lsmlon', 'lsmlat', 'gridcell'}
+    if(isempty(vardimids)==0)
+        vdim_names = {};
+        for dim_itr = 1:numel(vardimids)
+            vdim_id = double(vardimids(dim_itr)+1)
+            vdim_names = [vdim_names; in_dict(vdim_id)];
+        end
+    end
+    
     switch varname
         case {'LATIXY'}
             netcdf.putVar(ncid_out,ivar-1,lati_region);
         case {'LONGXY'}
             netcdf.putVar(ncid_out,ivar-1,long_region);
         otherwise
-            
+
+            dimnames
             switch length(vardimids)
                 case 0
                     netcdf.putVar(ncid_out,ivar-1,data);
@@ -197,7 +217,7 @@ for ivar = 1:nvars
                     if (lonlat_found)
                         data = 0;
                     else
-                        if (vardimids == 0)
+                        if any(ismember(vdim_names, spatial_dims)) % check if dim is spatial (is this an actual use case? only true for gridcell?)
                             data = data(ii_idx);
                         else
                             data = 0;
@@ -205,7 +225,7 @@ for ivar = 1:nvars
                     end
                     netcdf.putVar(ncid_out,ivar-1,0,length(data),data);
                 case 2
-                    if (min(vardimids) == 0) 
+                    if any(ismember(vdim_names, spatial_dims)) 
                         
                         if (lonlat_found)
                             data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data);
@@ -220,7 +240,7 @@ for ivar = 1:nvars
                         netcdf.putVar(ncid_out,ivar-1,data);
                     end
                 case 3
-                    if (min(vardimids) == 0)
+                    if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
                             data_2d  = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data);
                             data_new = PerformFractionCoverCheck(varname, data_2d, set_natural_veg_frac_to_one);
@@ -235,7 +255,7 @@ for ivar = 1:nvars
                         netcdf.putVar(ncid_out,ivar-1,data);
                     end
                 case 4
-                    if (min(vardimids) == 0)
+                    if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
                             data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data);
                         else
@@ -373,8 +393,8 @@ end
 
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Maps between input and output dimension numbers 
-% Deals with surface datasets with variable dimension order (unlimited time first, etc.)
-% in conjunction with changes to the "Define dims" section that puts time last
+% Deals with netcdf surface data with variable dimension order (unlimited time first, etc.)
+% in conjunction with changes to the "Define dims" section that simply defines the time dim last
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
     

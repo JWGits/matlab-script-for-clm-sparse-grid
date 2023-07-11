@@ -404,7 +404,7 @@ end
 out_dims = [];
 if (isempty(diminputs)==0)
     for dim_itr = 1:numel(diminputs)
-        vdim_out = char(diminputs(double(dim_itr)))
+        vdim_out = char(diminputs(dim_itr))
         out_dims = [out_dims; out_dict(vdim_out)]
     end
 end

@@ -62,20 +62,20 @@ for idim = 1:ndims
                 dimlen = length(long_region);
                 disp(['Out: Dimension name:' dimname])
                 dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-                %out_dim_id = [out_dim_id; idim];
+                out_dim_id = [out_dim_id; idim];
                 out_dim_name = [out_dim_name; {dimname}];
             end
         case 'gridcell'
             dimlen = length(long_region);
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            %out_dim_id = [out_dim_id; idim];
+            out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
         case 'time'
             time_found = 1;
         otherwise
             disp(['Out: Dimension name:' dimname])
             dimid(idim) = netcdf.defDim(ncid_out,dimname,dimlen);
-            %out_dim_id = [out_dim_id; idim];
+            out_dim_id = [out_dim_id; idim];
             out_dim_name = [out_dim_name; {dimname}];
     end
 end
@@ -83,20 +83,22 @@ end
 if (time_found == 1)
     [time_index] = find(strcmp(in_dim_name,'time'));
     [dimname, dimlen] = netcdf.inqDim(ncid_inp, time_index-1);
-    last_dim = ndims + 1;
-        if(unlimdimid(1) ~= -1)
-            dimid(last_dim) = netcdf.defDim(ncid_out,dimname,netcdf.getConstant('NC_UNLIMITED'));
-        else
-            dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
-        end
-    %out_dim_id = [out_dim_id; last_dim];
+    last_dim = ndims + 1
+    if(unlimdimid(1) ~= -1)
+        nc_time_const = netcdf.getConstant('NC_UNLIMITED')
+        dimid(last_dim) = netcdf.defDim(ncid_out,dimname,nc_time_const);
+    else
+        dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
+    end
+    out_dim_id = [out_dim_id; last_dim];
     out_dim_name = [out_dim_name; {dimname}]
 end
 
 in_dim_id = num2cell(in_dim_id)
-out_dim_id = [1:numel(out_dim_name)]'
+out_dim_id = num2cell(out_dim_id)
+$out_dim_id = [1:numel(out_dim_name)]'
 in_dict = containers.Map(in_dim_id, in_dim_name)
-out_dict = containers.Map(out_dim_name, num2cell(out_dim_id))
+out_dict = containers.Map(out_dim_name, out_dim_id)
 
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
@@ -136,7 +138,7 @@ for ivar = 1:nvars
     if (isempty(diminputs)==0)
         for dim_itr = 1:numel(diminputs)
             vdim_out = char(diminputs(double(dim_itr)))
-            out_dims = [out_dims; out_dict(vdim_out)]
+            out_dims = [out_dims; out_dict(vdim_out)-1]
         end
     end
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);

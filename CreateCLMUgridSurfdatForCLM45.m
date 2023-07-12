@@ -211,7 +211,7 @@ for ivar = 1:nvars
                     netcdf.putVar(ncid_out,ivar-1,data);
                 case 1
                     if any(ismember(varname, out_dim_name))
-                        netcdf.putVar(ncid_out,ivar-1,data);
+                        data=data;
                     elseif (lonlat_found)
                         data = 0;
                     else

@@ -390,9 +390,9 @@ if(isempty(dim_ids)==0)
     for dim_itr = 1:numel(dim_ids)
         vdim_id = double(dim_ids(dim_itr)+1);
         vdim_names = [vdim_names; in_dict(vdim_id)];
-        %fprintf('\ndimnames: ');
-        %fprintf('%s  ', vdim_names{:});
     end
+    %fprintf('\ndimnames: ');
+    %fprintf('%s  ', vdim_names{:});
     if any(strcmp(vdim_names,'lsmlon'))
         rm_lonlat = {'lsmlon';'lsmlat'};
         dimupdate = setdiff(vdim_names, rm_lonlat, 'stable');

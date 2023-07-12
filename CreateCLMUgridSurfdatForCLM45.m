@@ -406,9 +406,10 @@ if(isempty(dim_ids)==0)
     end
     if any(strcmp(vdim_names,'lsmlon'))
         rm_lonlat = {'lsmlon';'lsmlat'}
-        dimupdate = setdiff(vdim_names, rm_lonlat)
+        dimupdate = setdiff(vdim_names, rm_lonlat, 'stable')
         if(isempty(dimupdate) == 0)
-            diminputs = {'gridcell'};
+            diminputs = {};
+            diminputs = [diminputs; {'gridcell'}]
             for i = 1:numel(dimupdate)
                 diminputs = [diminputs; dimupdate{i}]
             end

@@ -192,8 +192,8 @@ for ivar = 1:nvars
     % the work around here has been to define time last and simply map associations between input vs output dim numbers based on dimnames            
     % instead of checking for a dim number of zero, I now confirm a spatial dim before converting the data below
     spatial_dims = {'lsmlon', 'lsmlat', 'gridcell'};
+    vdim_names = {};
     if(isempty(vardimids)==0)
-        vdim_names = {};
         for dim_itr = 1:numel(vardimids)
             vdim_id = double(vardimids(dim_itr)+1);
             vdim_names = [vdim_names, in_dict(vdim_id)];

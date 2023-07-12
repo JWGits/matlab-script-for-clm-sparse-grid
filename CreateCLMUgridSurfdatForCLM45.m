@@ -204,6 +204,8 @@ for ivar = 1:nvars
             netcdf.putVar(ncid_out,ivar-1,lati_region);
         case {'LONGXY'}
             netcdf.putVar(ncid_out,ivar-1,long_region);
+        case {'time'}
+            netcdf.putVar(ncid_out,ivar-1,data);
         otherwise
         
             switch length(vdim_names)

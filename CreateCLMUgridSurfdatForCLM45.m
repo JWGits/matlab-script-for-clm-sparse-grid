@@ -182,7 +182,7 @@ for ivar = 1:nvars
     %disp(varnames{ivar})
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
-
+    varname
     % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this is ambiguous
     % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
     % I used Python/Xarray, which doesnt fix/garuntee dimension order of the dimension list, to manipulate CLM surface data
@@ -197,7 +197,7 @@ for ivar = 1:nvars
         vdim_names = {};
         for dim_itr = 1:numel(vardimids)
             vdim_id = double(vardimids(dim_itr)+1)
-            vdim_names = [vdim_names; in_dict(vdim_id)];
+            vdim_names = [vdim_names, in_dict(vdim_id)];
         end
     end
     

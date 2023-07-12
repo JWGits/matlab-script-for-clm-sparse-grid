@@ -204,18 +204,18 @@ for ivar = 1:nvars
             netcdf.putVar(ncid_out,ivar-1,lati_region);
         case {'LONGXY'}
             netcdf.putVar(ncid_out,ivar-1,long_region);
-        case {'time'}
-            netcdf.putVar(ncid_out,ivar-1,data);
         otherwise
         
             switch length(vdim_names)
                 case 0
                     netcdf.putVar(ncid_out,ivar-1,data);
                 case 1
-                    if (lonlat_found)
+                    if any(ismember(varname, out_dim_name))
+                        netcdf.putVar(ncid_out,ivar-1,data);
+                    elseif (lonlat_found)
                         data = 0;
                     else
-                        if any(ismember(vdim_names, spatial_dims))
+                        if any(ismember(vdim_names, {'gridcell'}))
                             data = data(ii_idx);
                         else
                             data = 0;

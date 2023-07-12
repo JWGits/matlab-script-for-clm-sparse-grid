@@ -55,7 +55,7 @@ for idim = 1:ndims
     
     switch dimname
         case {'lsmlon','lsmlat'}
-            if (lonlat_found == 0) & (dimname == 'lsmlon')
+            if (lonlat_found == 0)
                 lonlat_found = 1;
                 dimname = 'gridcell';
                 dimlen = length(long_region);
@@ -185,12 +185,11 @@ for ivar = 1:nvars
     % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this was ambiguous
     % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
     % I used Python/Xarrayto manipulate CLM surface data, which doesnt fix/guarantee order of the netcdfs dimension list 
-    % variable dims are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list
-    % The data variables are also transposed properly by the netcdf API when read into Matlab vs Python as expected
-    % but, the dimension list is not fully controllable in python/xarray and can be written out in different orders
-    % this is most problematic with the UNLIMITED time dim that is defined first by Xarray but must be defined last in Matlab
+    % The data variables are transposed properly by the netcdf API when read into Matlab (row-major) vs Python (column-major) order
+    % but, the top-level netcdf dimension list is not fully controllable in python/xarray and can be written out in different orders
+    % this is most problematic with the UNLIMITED time dim that is defined first by Xarray but must not be defined first in Matlab
     % the work around here has been to define time last and simply map associations between input vs output dim numbers based on dimnames            
-    % instead of checking for a dim number of zero, I now confirm a spatial dim before converting the data below
+    % instead of checking for dim == 0, a spatial dim is confirmed before converting the data
     spatial_dims = {'lsmlon', 'lsmlat', 'gridcell'};
     vdim_names = {};
     if(isempty(vardimids)==0)

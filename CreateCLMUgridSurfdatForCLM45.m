@@ -45,14 +45,13 @@ lonlat_found = 0;
 time_found = 0;
 in_dim_id = [];
 in_dim_name = {};
-out_dim_id = [];
 out_dim_name = {};
 
 for idim = 1:ndims
     [dimname, dimlen] = netcdf.inqDim(ncid_inp,idim-1);
     disp(['Inp: Dimension name:' dimname])
-    in_dim_id = [in_dim_id; idim]
-    in_dim_name = [in_dim_name; {dimname}]
+    in_dim_id = [in_dim_id; idim];
+    in_dim_name = [in_dim_name; {dimname}];
     
     switch dimname
         case {'lsmlon','lsmlat'}
@@ -80,21 +79,21 @@ end
 if (time_found == 1)
     [time_index] = find(strcmp(in_dim_name,'time'));
     [dimname, dimlen] = netcdf.inqDim(ncid_inp, time_index-1);
-    last_dim = ndims + 1
+    last_dim = ndims + 1;
+    disp(['Out: Dimension name:' dimname])
     if(unlimdimid(1) ~= -1)
-        nc_time_const = netcdf.getConstant('NC_UNLIMITED')
+        nc_time_const = netcdf.getConstant('NC_UNLIMITED');
         dimid(last_dim) = netcdf.defDim(ncid_out,dimname,nc_time_const);
     else
         dimid(last_dim) = netcdf.defDim(ncid_out,dimname,dimlen);
     end
-    out_dim_name = [out_dim_name; {dimname}]
+    out_dim_name = [out_dim_name; {dimname}];
 end
 
-in_dim_id = num2cell(in_dim_id)
-out_dim_id = [1:numel(out_dim_name)]'-1
-out_dim_id = num2cell(out_dim_id)
-in_dict = containers.Map(in_dim_id, in_dim_name)
-out_dict = containers.Map(out_dim_name, out_dim_id)
+in_dim_id = num2cell(in_dim_id);
+out_dim_id = num2cell([1:numel(out_dim_name)]'-1);
+in_dict = containers.Map(in_dim_id, in_dim_name);
+out_dict = containers.Map(out_dim_name, out_dim_id);
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 %
 %                           Define variables
@@ -102,10 +101,10 @@ out_dict = containers.Map(out_dim_name, out_dim_id)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 for ivar = 1:nvars
     [varname,xtype,dim_ids,natts] = netcdf.inqVar(ncid_inp,ivar-1);
-    fprintf('\nvarname: %s \ndimids: ', varname);
-    fprintf(' %d   ', dim_ids);
+    %fprintf('\nvarname: %s \ndimids: ', varname);
+    %fprintf(' %d   ', dim_ids);
 
-    out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
+    out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict);
     
     varid(ivar) = netcdf.defVar(ncid_out,varname,xtype,out_dims);
     varnames{ivar} = varname;
@@ -182,21 +181,21 @@ for ivar = 1:nvars
     %disp(varnames{ivar})
     [varname,vartype,vardimids,varnatts]=netcdf.inqVar(ncid_inp,ivar-1);
     data = netcdf.getVar(ncid_inp,ivar-1);
-    varname
-    % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this is ambiguous
+
+    % I believe looking for variable ID == 0 below was meant to find spatial dimensions - this was ambiguous
     % if netcdfs are created across coding languages, or by different groups, the zero dimension will not always be the same
-    % I used Python/Xarray, which doesnt fix/garuntee dimension order of the dimension list, to manipulate CLM surface data
+    % I used Python/Xarrayto manipulate CLM surface data, which doesnt fix/guarantee order of the netcdfs dimension list 
     % variable dims are maintained in row- vs column-major dimension order as expected but that is separate from the netcdfs dim list
     % The data variables are also transposed properly by the netcdf API when read into Matlab vs Python as expected
-    % but, the dimension list is not fully controllable in python/xarray and can be read out in different orders
+    % but, the dimension list is not fully controllable in python/xarray and can be written out in different orders
     % this is most problematic with the UNLIMITED time dim that is defined first by Xarray but must be defined last in Matlab
     % the work around here has been to define time last and simply map associations between input vs output dim numbers based on dimnames            
-    % instead of checking for a dim number of zero, i confirm a spatial dim before converting the data below
-    spatial_dims = {'lsmlon', 'lsmlat', 'gridcell'}
+    % instead of checking for a dim number of zero, I now confirm a spatial dim before converting the data below
+    spatial_dims = {'lsmlon', 'lsmlat', 'gridcell'};
     if(isempty(vardimids)==0)
         vdim_names = {};
         for dim_itr = 1:numel(vardimids)
-            vdim_id = double(vardimids(dim_itr)+1)
+            vdim_id = double(vardimids(dim_itr)+1);
             vdim_names = [vdim_names, in_dict(vdim_id)];
         end
     end
@@ -208,14 +207,14 @@ for ivar = 1:nvars
             netcdf.putVar(ncid_out,ivar-1,long_region);
         otherwise
         
-            switch length(vardimids)
+            switch length(vdim_names)
                 case 0
                     netcdf.putVar(ncid_out,ivar-1,data);
                 case 1
                     if (lonlat_found)
                         data = 0;
                     else
-                        if any(ismember(vdim_names, spatial_dims)) % check if dim is spatial (is this an actual use case? only true for gridcell?)
+                        if any(ismember(vdim_names, spatial_dims))
                             data = data(ii_idx);
                         else
                             data = 0;
@@ -226,7 +225,7 @@ for ivar = 1:nvars
                     if any(ismember(vdim_names, spatial_dims)) 
                         
                         if (lonlat_found)
-                            data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
+                            data_1d = sgrid_convert_2d_to_1d(ii_idx, jj_idx, data);
                             data_new = PerformFractionCoverCheck(varname, data_1d, set_natural_veg_frac_to_one);
                         else
                             data_2d = ugrid_convert_2d_to_2d(ii_idx, data);
@@ -240,7 +239,7 @@ for ivar = 1:nvars
                 case 3
                     if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
-                            data_2d  = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
+                            data_2d  = sgrid_convert_3d_to_2d(ii_idx, jj_idx, data);
                             data_new = PerformFractionCoverCheck(varname, data_2d, set_natural_veg_frac_to_one);
                             netcdf.putVar(ncid_out,ivar-1,data_new);
                         else
@@ -255,7 +254,7 @@ for ivar = 1:nvars
                 case 4
                     if any(ismember(vdim_names, spatial_dims))
                         if (lonlat_found)
-                            data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict);
+                            data_3d = sgrid_convert_4d_to_3d(ii_idx, jj_idx, data);
                         else
                             disp('error')
                         end
@@ -279,7 +278,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 2D data (lat,lon) to 1D (gridcell)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_1d = sgrid_convert_2d_to_1d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
+function data_1d = sgrid_convert_2d_to_1d(ii_idx, jj_idx, data)
 
 data_2d = zeros(size(ii_idx));
 
@@ -290,9 +289,6 @@ for ii=1:size(ii_idx,1)
 end
 
 % (lon,lat) --> % (gridcell)
-%vardimids_new =  [0 vardimids(3:end)-1];
-%vardimids = vardimids_new;
-%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_2d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -315,7 +311,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 3D data (lat,lon,:) to 2D (gridcell,:)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_2d = sgrid_convert_3d_to_2d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
+function data_2d = sgrid_convert_3d_to_2d(ii_idx, jj_idx, data)
 
 nx = size(ii_idx,1);
 ny = size(jj_idx,2);
@@ -328,9 +324,6 @@ for ii = 1:nx
 end
 
 % (lon,lat,:) --> % (gridcell,:)
-%vardimids_new =  [0 vardimids(3:end)-1];
-%vardimids = vardimids_new;
-%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_3d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -360,7 +353,7 @@ end
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % Converts a 4D data (lat,lon,:,:) to 3D (gridcell,:,:)
 % +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-function data_3d = sgrid_convert_4d_to_3d(vardimids, ii_idx, jj_idx, data, in_dict, out_dict)
+function data_3d = sgrid_convert_4d_to_3d(ii_idx, jj_idx, data)
 
 nx = size(ii_idx,1);
 ny = size(ii_idx,2);
@@ -375,9 +368,6 @@ for ii = 1:nx
 end
 
 % (lon,lat,:) --> % (gridcell,:)
-%vardimids_new =  [0 vardimids(3:end)-1];
-%vardimids = vardimids_new;
-%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_4d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -399,25 +389,25 @@ function out_dims = map_input_to_output_dimensions(dim_ids, in_dict, out_dict)
 if(isempty(dim_ids)==0)
     vdim_names = {};
     for dim_itr = 1:numel(dim_ids)
-        vdim_id = double(dim_ids(dim_itr)+1)
+        vdim_id = double(dim_ids(dim_itr)+1);
         vdim_names = [vdim_names; in_dict(vdim_id)];
-        fprintf('\ndimnames: ');
-        fprintf('%s  ', vdim_names{:});
+        %fprintf('\ndimnames: ');
+        %fprintf('%s  ', vdim_names{:});
     end
     if any(strcmp(vdim_names,'lsmlon'))
-        rm_lonlat = {'lsmlon';'lsmlat'}
-        dimupdate = setdiff(vdim_names, rm_lonlat, 'stable')
+        rm_lonlat = {'lsmlon';'lsmlat'};
+        dimupdate = setdiff(vdim_names, rm_lonlat, 'stable');
         if(isempty(dimupdate) == 0)
             diminputs = {};
-            diminputs = [diminputs; {'gridcell'}]
+            diminputs = [diminputs; {'gridcell'}];
             for i = 1:numel(dimupdate)
-                diminputs = [diminputs; dimupdate{i}]
+                diminputs = [diminputs; dimupdate{i}];
             end
         else
-            diminputs = {'gridcell'}
+            diminputs = {'gridcell'};
         end
     else
-        diminputs = vdim_names 
+        diminputs = vdim_names;
     end
 else
     diminputs = [];
@@ -425,8 +415,8 @@ end
 out_dims = [];
 if (isempty(diminputs)==0)
     for dim_itr = 1:numel(diminputs)
-        vdim_out = char(diminputs(dim_itr))
-        out_dims = [out_dims, out_dict(vdim_out)]
+        vdim_out = char(diminputs(dim_itr));
+        out_dims = [out_dims, out_dict(vdim_out)];
     end
 end
 

@@ -292,7 +292,7 @@ end
 % (lon,lat) --> % (gridcell)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
-vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
+%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_2d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -330,7 +330,7 @@ end
 % (lon,lat,:) --> % (gridcell,:)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
-vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
+%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_3d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
@@ -377,7 +377,7 @@ end
 % (lon,lat,:) --> % (gridcell,:)
 %vardimids_new =  [0 vardimids(3:end)-1];
 %vardimids = vardimids_new;
-vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
+%vardimids = map_input_to_output_dimensions(vardimids, in_dict, out_dict);
 dims = size(data_4d);
 if (length(dims)>2)
     dims_new = [dims(1)*dims(2) dims(3:end)];
